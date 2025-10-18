@@ -22,3 +22,5 @@ ENV NODE_ENV=production
 
 # Démarrer l'application
 CMD ["npm", "start"]
+
+LABEL org.opencontainers.image.source="https://github.com/pauldebril/terraform-test"

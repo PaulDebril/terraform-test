@@ -53,3 +53,6 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]
+
+LABEL org.opencontainers.image.source="https://github.com/pauldebril/terraform-test"
+
