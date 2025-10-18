@@ -1,0 +1,19 @@
+{
+  "database": {
+    "local": {
+      "host": "postgres",
+      "port": 5432,
+      "database": "testdb",
+      "user": "admin",
+      "password": "admin123"
+    },
+    "remote": {
+      "host": "YOUR_EC2_IP_HERE",
+      "port": 5432,
+      "database": "testdb",
+      "user": "admin",
+      "password": "admin123"
+    },
+    "active": "local"
+  }
+}
