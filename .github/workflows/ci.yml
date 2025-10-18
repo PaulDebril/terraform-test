@@ -6,29 +6,49 @@ on:
   pull_request:
     branches: [ main ]
 
+# Give the workflow explicit permissions so GITHUB_TOKEN can push to GHCR
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+
 jobs:
-  frontend:
-    name: Frontend Lint & Build
+  build-and-push:
+    name: Build and push images
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [frontend, backend]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Create short tag from commit
+        id: set-tag
+        run: echo "tag=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          node-version: 18
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
 
-      - name: Install dependencies (frontend)
-        run: npm ci
-        working-directory: frontend
+      - name: Build and push Docker image
+        env:
+          SHORT_HASH: ${{ steps.set-tag.outputs.tag }}
+          REPO_OWNER: ${{ env.OWNER }}
+        run: |
+          SERVICE=${{ matrix.service }}
+          # lowercase the owner (GHCR usernames are case-insensitive but using lowercase keeps tags tidy)
+          REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+          IMAGE=${{ env.REGISTRY }}/${REPO_OWNER}/${SERVICE}:${SHORT_HASH}
+          echo "Building $IMAGE"
+          # Build using the service directory as build context and the right Dockerfile
+          docker build -f ${SERVICE}/Dockerfile -t $IMAGE ${SERVICE}
+          echo "Pushing $IMAGE"
+          docker push $IMAGE
 
-      - name: Run ESLint (frontend)
-        run: npm run lint
-        working-directory: frontend
-
-      - name: Build frontend
-        run: npm run build
-        working-directory: frontend
