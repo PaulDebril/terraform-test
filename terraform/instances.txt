@@ -1,0 +1,9 @@
+Database IP (private): 172.31.44.23
+Database IP (public):  3.65.34.204
+Backend IP (private):  172.31.47.140
+Backend IP (public):   3.65.33.51
+Frontend IP (public):  54.93.83.41
+
+Frontend URL: http://54.93.83.41
+Backend API:  http://3.65.33.51:3001
+Database:     3.65.34.204:5432

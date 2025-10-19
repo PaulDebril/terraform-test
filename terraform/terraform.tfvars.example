@@ -1,0 +1,11 @@
+# AWS Configuration
+aws_region    = "eu-central-1"
+ami_id        = "ami-0444794b421ec32e4"  # Amazon Linux 2 AMI (HVM) - eu-central-1
+instance_type = "t2.micro"
+instance_name = "web-server"
+key_name      = "deployer-key"
+
+# GitHub Container Registry Configuration
+github_username = "pauldebril"
+github_token    = "ghp_YOUR_GITHUB_TOKEN_HERE"  # Get from https://github.com/settings/tokens
+docker_tag      = "1835928"  # Use the commit hash from: docker pull ghcr.io/pauldebril/frontend:1835928
